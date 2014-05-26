@@ -2,23 +2,24 @@
 
 echo "Welcome to IncIn, an inline interpreter for c";
 CODE=""
+TEMP_FILE=$(mktemp --tmpdir IncIn.XXXXXXXXXX)
+chmod +x $TEMP_FILE
 while true; do
 	read -p ">>> " temp
 	CODE="$CODE $temp" #Append old code to new
 
-	#Write out file
-	echo "#include <stdio.h>" > temp.c;
-	echo "int main(void) {" >> temp.c;
-		echo $CODE >> temp.c;
-	echo "return 0;}" >> temp.c;
-	
-	#compile
-	gcc temp.c -o temp;
-	
+    gcc -x c -o $TEMP_FILE - <<EOF
+    #include <stdio.h>
+    int main(int argc, char** argv) {
+        $CODE
+    return 0;
+    }
+EOF
+    
 	#run
-	./temp;
-	#cleanup
-	#rm temp.c;
-	#rm ./temp;
+	$TEMP_FILE
+	
 	echo
 done
+rm $TEMP_FILE
+
