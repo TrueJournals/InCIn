@@ -4,8 +4,7 @@ echo "Welcome to IncIn, an inline interpreter for c";
 CODE=""
 TEMP_FILE=$(mktemp --tmpdir IncIn.XXXXXXXXXX)
 chmod +x $TEMP_FILE
-while true; do
-	read -p ">>> " temp
+while read -p ">>> " temp; do
 	CODE="$CODE $temp" #Append old code to new
 
     gcc -x c -o $TEMP_FILE - <<EOF
